@@ -1,20 +1,38 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxState;
+import flixel.group.FlxGroup;
 
 class World extends FlxState
 {
+    public var solids : FlxGroup;
+
     override public function create() : Void
     {
         // Do things
+        solids = new FlxGroup();
+        add(solids);
 
-        add(new Entity(100, 100, this));
+        solids.add(new Solid(0, 200-16, 320, 16, this));
+
+        add(new Player(112, 16, this));
+
+        trace(FlxG.updateFramerate);
+        trace(FlxG.drawFramerate);
 
         super.create();
     }
 
     override public function update(elapsed : Float) : Void
     {
+        if (FlxG.mouse.justPressed) {
+            var x : Int = Std.int(FlxG.mouse.x / 16) * 16;
+            var y : Int = Std.int(FlxG.mouse.y / 16) * 16;
+
+            solids.add(new Solid(x, y, 16, 16, this));
+        }
+
         super.update(elapsed);
     }
 }

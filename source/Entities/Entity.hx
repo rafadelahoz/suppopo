@@ -10,6 +10,8 @@ class Entity extends FlxSprite
     {
         super(X, Y);
         world = World;
+
+        moves = false;
     }
 
     override public function update(elapsed : Float) : Void
