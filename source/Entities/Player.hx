@@ -39,19 +39,19 @@ class Player extends Actor
             vspeed = 0;
         }
 
-        if (FlxG.keys.pressed.LEFT) {
+        if (Gamepad.left()) {
             hspeed = -HorizontalSpeed;
-        } else if (FlxG.keys.pressed.RIGHT) {
+        } else if (Gamepad.right()) {
             hspeed = HorizontalSpeed;
         } else {
             hspeed = 0;
         }
 
-        if (!sOnAir && FlxG.keys.pressed.UP)
+        if (!sOnAir && Gamepad.pressed(Gamepad.A))
         {
             vspeed = -VerticalSpeed;
         }
-        else if (sOnAir && FlxG.keys.justReleased.UP)
+        else if (sOnAir && Gamepad.justReleased(Gamepad.A))
         {
             vspeed *= 0.256;
         }
