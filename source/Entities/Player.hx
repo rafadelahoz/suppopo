@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxSprite;
 
 class Player extends Actor
 {
@@ -21,6 +22,8 @@ class Player extends Actor
 
     var haccel : Float;
 
+    var groundProbe : FlxSprite;
+
     public function new(X : Float, Y : Float, World : World) {
         super(X, Y, World);
 
@@ -31,15 +34,31 @@ class Player extends Actor
 
         haccel = 0;
 
+        groundProbe = new FlxSprite(0, 0);
+        groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
+        groundProbe.visible = false;
+        groundProbe.solid = false;
+
         FlxG.watch.add(this, "hspeed");
         FlxG.watch.add(this, "vspeed");
         FlxG.watch.add(this, "xRemainder");
         FlxG.watch.add(this, "yRemainder");
     }
 
+    private function checkOnAir() : Bool
+    {
+        var onGround =
+            groundProbe.overlaps(world.solids) ||
+            (vspeed >= 0 &&
+                (groundProbe.overlaps(world.oneways) &&
+                !groundProbe.overlapsAt(x, y+height-1, world.oneways)));
+
+        return !onGround;
+    }
+
     override public function update(elapsed : Float) : Void
     {
-        sOnAir = !overlapsAt(x, y+1, world.solids);
+        sOnAir = checkOnAir();
 
         if (sOnAir) {
             vspeed += Gravity;
@@ -47,11 +66,16 @@ class Player extends Actor
             vspeed = 0;
         }
 
-        if (Gamepad.left()) {
+        if (Gamepad.left())
+        {
             haccel = -HorizontalAccel * (sOnAir ? HorizontalAirFactor : 1);
-        } else if (Gamepad.right()) {
+        }
+        else if (Gamepad.right())
+        {
             haccel = HorizontalAccel * (sOnAir ? HorizontalAirFactor : 1);
-        } else {
+        }
+        else
+        {
             haccel = 0;
         }
 
@@ -97,7 +121,17 @@ class Player extends Actor
         else
             color = 0xFFFFFFFF;
 
+        groundProbe.x = x;
+        groundProbe.y = y + height;
+
         super.update(elapsed);
+        groundProbe.update(elapsed);
+    }
+
+    override public function draw()
+    {
+        super.draw();
+        groundProbe.draw();
     }
 
     function onHorizontalCollision() : Void

@@ -58,12 +58,9 @@ class Actor extends Entity
 
             while (move != 0)
             {
-                if (!overlapsAt(x, y + delta, world.solids))
-                {
-                    y += delta;
-                    move -= delta;
-                }
-                else
+                if (overlapsAt(x, y + delta, world.solids) ||
+                    (delta > 0 && !overlapsAt(x, y, world.oneways) &&
+                    overlapsAt(x, y + delta, world.oneways)))
                 {
                     if (callback != null) {
                         callback();
@@ -71,6 +68,12 @@ class Actor extends Entity
 
                     break;
                 }
+                else
+                {
+                    y += delta;
+                    move -= delta;
+                }
+
             }
         }
     }
