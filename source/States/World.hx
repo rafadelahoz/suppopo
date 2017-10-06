@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxState;
+import flixel.FlxBasic;
 import flixel.group.FlxGroup;
 
 class World extends FlxState
@@ -26,7 +27,17 @@ class World extends FlxState
 
     override public function update(elapsed : Float) : Void
     {
-        if (FlxG.mouse.justPressed) {
+        if (FlxG.keys.pressed.SPACE)
+        {
+            beginSlowdown();
+        }
+        else
+        {
+            endSlowdown();
+        }
+
+        if (FlxG.mouse.justPressed)
+        {
             var x : Int = Std.int(FlxG.mouse.x / 16) * 16;
             var y : Int = Std.int(FlxG.mouse.y / 16) * 16;
 
@@ -34,5 +45,25 @@ class World extends FlxState
         }
 
         super.update(elapsed);
+    }
+
+    public function beginSlowdown() : Void
+    {
+        forEachAlive(function(entity : FlxBasic) {
+            if (Std.is(entity, Entity))
+            {
+                cast(entity, Entity).beginSlowdown();
+            }
+        }, true);
+    }
+
+    public function endSlowdown() : Void
+    {
+        forEachAlive(function(entity : FlxBasic) {
+            if (Std.is(entity, Entity))
+            {
+                cast(entity, Entity).endSlowdown();
+            }
+        }, true);
     }
 }

@@ -70,8 +70,15 @@ class Player extends Actor
             hspeed = MathUtil.sign(hspeed) * HorizontalSpeed;
         }
 
-        moveX(hspeed, onHorizontalCollision);
-        moveY(vspeed, onVerticalCollision);
+        var _hspeed : Float = hspeed;
+        var _vspeed : Float = vspeed;
+        if (slowdown) {
+            _hspeed *= Constants.SlowdownFactor;
+            _vspeed *= Constants.SlowdownFactor;
+        }
+
+        moveX(_hspeed, onHorizontalCollision);
+        moveY(_vspeed, onVerticalCollision);
 
         // Handle friction
         if (haccel == 0)
