@@ -26,7 +26,7 @@ class Actor extends Entity
         if (move != 0)
         {
             xRemainder -= move;
-            var delta : Int = sign(move);
+            var delta : Int = MathUtil.sign(move);
             while (move != 0)
             {
                 if (!overlapsAt(x + delta, y, world.solids))
@@ -54,7 +54,7 @@ class Actor extends Entity
         if (move != 0)
         {
             yRemainder -= move;
-            var delta : Int = sign(move);
+            var delta : Int = MathUtil.sign(move);
 
             while (move != 0)
             {
@@ -73,15 +73,5 @@ class Actor extends Entity
                 }
             }
         }
-    }
-
-    private function sign(num : Int) : Int
-    {
-        if (num < 0)
-            return -1;
-        else if (num > 0)
-            return 1;
-        else
-            return 0;
     }
 }
