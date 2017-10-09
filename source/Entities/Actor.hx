@@ -5,6 +5,8 @@ class Actor extends Entity
     var xRemainder : Float;
     var yRemainder : Float;
 
+    var dt : Float;
+
     public function new(X : Float, Y : Float, World : World)
     {
         super(X, Y, World);
@@ -20,7 +22,7 @@ class Actor extends Entity
 
     public function moveX(amount : Float, ?callback : Void -> Void = null) : Void
     {
-        xRemainder += amount;
+        xRemainder += amount * dt;
         var move : Int = Std.int(xRemainder);
 
         if (move != 0)
@@ -48,7 +50,7 @@ class Actor extends Entity
 
     public function moveY(amount : Float, ?callback : Void -> Void = null) : Void
     {
-        yRemainder += amount;
+        yRemainder += amount * dt;
         var move : Int = Std.int(yRemainder);
 
         if (move != 0)

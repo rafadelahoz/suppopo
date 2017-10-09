@@ -5,17 +5,17 @@ import flixel.FlxSprite;
 
 class Player extends Actor
 {
-    var HorizontalSpeed : Float = 2.5;
+    var HorizontalSpeed : Float = 2.5 * 60;
     var HorizontalAirFactor : Float = 0.7;
-    var VerticalSpeed : Float = 6.6;
+    var VerticalSpeed : Float = 6.6 * 60;
     var JumpReleaseSlowdownFactor : Float = 0.256;
-    var Gravity : Float = 0.35;
-    var MaxVspeed : Float = 25;
+    var Gravity : Float = 0.35 * 60;
+    var MaxVspeed : Float = 25 * 60;
 
-    var HorizontalAccel : Float = 0.3;
+    var HorizontalAccel : Float = 0.3 * 60;
     var Friction : Float = 0.6;
 
-    var CoyoteTime : Int = 6;
+    var CoyoteTime : Int = 6 * 60;
     var coyoteBuffer : Int = 0;
 
     var onAir : Bool;
@@ -61,6 +61,8 @@ class Player extends Actor
 
     override public function update(elapsed : Float) : Void
     {
+        dt = elapsed;
+
         var wasOnAir : Bool = onAir;
         onAir = checkOnAir();
 
@@ -114,8 +116,9 @@ class Player extends Actor
         var _hspeed : Float = hspeed;
         var _vspeed : Float = vspeed;
         if (slowdown) {
-            _hspeed *= Constants.SlowdownFactor;
-            _vspeed *= Constants.SlowdownFactor;
+            /*_hspeed *= Constants.SlowdownFactor;
+            _vspeed *= Constants.SlowdownFactor;*/
+            dt *= 0.5;
         }
 
         moveX(_hspeed, onHorizontalCollision);
@@ -150,7 +153,7 @@ class Player extends Actor
     override public function draw()
     {
         super.draw();
-        groundProbe.draw();
+        // groundProbe.draw();
     }
 
     function onHorizontalCollision() : Void
