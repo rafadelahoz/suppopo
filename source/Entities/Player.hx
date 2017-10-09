@@ -15,7 +15,10 @@ class Player extends Actor
     var HorizontalAccel : Float = 0.3;
     var Friction : Float = 0.6;
 
-    var sOnAir : Bool;
+    var CoyoteTime : Int = 6;
+    var coyoteBuffer : Int = 0;
+
+    var onAir : Bool;
 
     var hspeed : Float;
     var vspeed : Float;
@@ -58,32 +61,46 @@ class Player extends Actor
 
     override public function update(elapsed : Float) : Void
     {
-        sOnAir = checkOnAir();
+        var wasOnAir : Bool = onAir;
+        onAir = checkOnAir();
 
-        if (sOnAir) {
+        if (!wasOnAir && onAir && coyoteBuffer == 0)
+        {
+            coyoteBuffer = CoyoteTime;
+        }
+
+        if (onAir)
+        {
             vspeed += Gravity;
+            if (coyoteBuffer > 0)
+            {
+                coyoteBuffer -= 1;
+            }
         } else {
             vspeed = 0;
+            coyoteBuffer = 0;
         }
 
         if (Gamepad.left())
         {
-            haccel = -HorizontalAccel * (sOnAir ? HorizontalAirFactor : 1);
+            haccel = -HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
         }
         else if (Gamepad.right())
         {
-            haccel = HorizontalAccel * (sOnAir ? HorizontalAirFactor : 1);
+            haccel = HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
         }
         else
         {
             haccel = 0;
         }
 
-        if (!sOnAir && Gamepad.justPressed(Gamepad.A))
+        if ((!onAir || coyoteBuffer > 0) && Gamepad.justPressed(Gamepad.A))
         {
             vspeed = -VerticalSpeed;
+            onAir = true;
+            coyoteBuffer = 0;
         }
-        else if (sOnAir && vspeed < 0 && Gamepad.justReleased(Gamepad.A))
+        else if (onAir && vspeed < 0 && Gamepad.justReleased(Gamepad.A))
         {
             vspeed *= JumpReleaseSlowdownFactor;
         }
@@ -116,7 +133,9 @@ class Player extends Actor
         }
 
         // Debug zone
-        if (sOnAir)
+        if (coyoteBuffer > 0)
+            color = 0xFF000aFF;
+        else if (onAir)
             color = 0xFF0aFF00;
         else
             color = 0xFFFFFFFF;
